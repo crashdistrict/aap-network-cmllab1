@@ -1,0 +1,21 @@
+---
+- name: Show Interfaces on Cisco Router
+  hosts: cisco_routers
+  gather_facts: false
+
+  tasks:
+    - name: Run show interfaces command
+      cisco.ios.ios_command:
+        commands:
+          - show interfaces
+      register: show_int_output
+
+    - name: Display the output
+      debug:
+        msg: "{{ show_int_output.stdout_lines }}"
+
+    - name: Save output to a file
+      copy:
+        content: "{{ show_int_output.stdout[0] }}"
+        dest: "/tmp/{{ inventory_hostname }}_interfaces.txt"
+      delegate_to: localhost
