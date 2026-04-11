@@ -7,7 +7,7 @@
     - name: Run show interfaces command
       cisco.ios.ios_command:
         commands:
-          - show interfaces
+          - show ip interface brief
       register: show_int_output
 
     - name: Display the output
