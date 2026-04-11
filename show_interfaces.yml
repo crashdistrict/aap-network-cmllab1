@@ -1,6 +1,6 @@
 ---
 - name: Show Interfaces on Cisco Router
-  hosts: cisco_routers
+  hosts: group_cisco_routers
   gather_facts: false
 
   tasks:
