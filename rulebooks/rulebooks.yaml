@@ -12,5 +12,5 @@
       condition: event.payload.trigger_name is defined
       action:
         run_job_template:
-          name: "Fix-Interface-Down"
-          organization: "Default"
+          name: "TEM_CML_LAB1"
+          organization: "Network_Team_CML"
