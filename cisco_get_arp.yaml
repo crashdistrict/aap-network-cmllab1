@@ -1,0 +1,18 @@
+---
+- name: Find ARP for specific IP
+  hosts: cisco_routers
+  gather_facts: no
+
+  vars:
+    target_ip: ""
+
+  tasks:
+    - name: Show ARP for target IP
+      cisco.ios.ios_command:
+        commands:
+          - "show ip arp {{ target_ip }}"
+      register: arp_result
+
+    - name: Display result
+      debug:
+        var: arp_result.stdout_lines
