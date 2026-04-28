@@ -3,16 +3,32 @@
   hosts: cisco_routers
   gather_facts: no
 
-  vars:
-    target_ip: ""
+  vars_prompt:
+    - name: target_ip
+      prompt: "Enter the IP address to look up in ARP"
+      private: no
 
   tasks:
-    - name: Show ARP for target IP
+    - name: Validate IP format
+      assert:
+        that:
+          - target_ip | ansible.utils.ipaddr
+        fail_msg: "'{{ target_ip }}' is not a valid IP address"
+        success_msg: "IP format is valid: {{ target_ip }}"
+
+    - name: Show ARP entry for target IP
       cisco.ios.ios_command:
         commands:
           - "show ip arp {{ target_ip }}"
       register: arp_result
 
-    - name: Display result
+    - name: Check if IP was found in ARP table
+      assert:
+        that:
+          - arp_result.stdout[0] | regex_search(target_ip)
+        fail_msg: "IP {{ target_ip }} was NOT found in the ARP table"
+        success_msg: "IP {{ target_ip }} found in ARP table"
+
+    - name: Display ARP result
       debug:
-        var: arp_result.stdout_lines
+        msg: "{{ arp_result.stdout_lines[0] }}"
