@@ -3,10 +3,8 @@
   hosts: group_cisco_routers
   gather_facts: no
 
-  vars_prompt:
-    - name: target_ip
-      prompt: "Enter the IP address to look up in ARP"
-      private: no
+  vars:
+    target_ip: ""
 
   tasks:
     - name: Validate IP format
