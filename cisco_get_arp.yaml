@@ -1,34 +1,21 @@
 ---
-- name: Find ARP for specific IP
-  hosts: cisco_routers
-  gather_facts: no
-
-  vars_prompt:
-    - name: target_ip
-      prompt: "Enter the IP address to look up in ARP"
-      private: no
+- name: Show Interfaces on Cisco Router
+  hosts: group_cisco_routers
+  gather_facts: false
 
   tasks:
-    - name: Validate IP format
-      assert:
-        that:
-          - target_ip | ansible.utils.ipaddr
-        fail_msg: "'{{ target_ip }}' is not a valid IP address"
-        success_msg: "IP format is valid: {{ target_ip }}"
-
-    - name: Show ARP entry for target IP
+    - name: Run show interfaces command
       cisco.ios.ios_command:
         commands:
-          - "show ip arp {{ target_ip }}"
-      register: arp_result
+          - show ip interface brief
+      register: show_int_output
 
-    - name: Check if IP was found in ARP table
-      assert:
-        that:
-          - arp_result.stdout[0] | regex_search(target_ip)
-        fail_msg: "IP {{ target_ip }} was NOT found in the ARP table"
-        success_msg: "IP {{ target_ip }} found in ARP table"
-
-    - name: Display ARP result
+    - name: Display the output
       debug:
-        msg: "{{ arp_result.stdout_lines[0] }}"
+        msg: "{{ show_int_output.stdout_lines }}"
+
+    - name: Save output to a file
+      copy:
+        content: "{{ show_int_output.stdout[0] }}"
+        dest: "/tmp/{{ inventory_hostname }}_interfaces.txt"
+      delegate_to: localhost
