@@ -1,0 +1,92 @@
+<html>
+<head>
+<style>
+body {
+  font-family: Arial;
+  background-color: #f5f5f5;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin: 15px;
+  background: white;
+}
+
+.title {
+  background: red;
+  color: white;
+  padding: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="title">
+{{ inventory_hostname }}
+</div>
+
+<h3>Device Info</h3>
+
+<table>
+<tr>
+  <td>Platform</td>
+  <td>{{ ansible_net_system }}</td>
+</tr>
+
+<tr>
+  <td>Version</td>
+  <td>{{ ansible_net_version }}</td>
+</tr>
+
+<tr>
+  <td>Model</td>
+  <td>{{ ansible_net_model }}</td>
+</tr>
+
+<tr>
+  <td>Serial</td>
+  <td>{{ ansible_net_serialnum }}</td>
+</tr>
+</table>
+
+<h3>Interfaces</h3>
+
+<table>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Enabled</th>
+<th>MTU</th>
+</tr>
+
+{% for intf in ansible_network_resources.interfaces %}
+
+<tr>
+<td>{{ intf.name }}</td>
+<td>{{ intf.description | default('none') }}</td>
+<td>{{ intf.enabled | default('unknown') }}</td>
+<td>{{ intf.mtu | default('default') }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</body>
+</html>
