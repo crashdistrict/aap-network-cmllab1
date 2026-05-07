@@ -14,21 +14,6 @@
           - vlans
       when: ansible_network_os == 'cisco.ios.ios'
 
-    - name: Gather Arista facts
-      arista.eos.eos_facts:
-        gather_network_resources:
-          - interfaces
-          - l2_interfaces
-          - l3_interfaces
-          - vlans
-      when: ansible_network_os == 'arista.eos.eos'
-
-    - name: Gather Juniper facts
-      junipernetworks.junos.junos_facts:
-        gather_network_resources:
-          - interfaces
-      when: ansible_network_os == 'junipernetworks.junos.junos'
-
     - name: Generate HTML report
       template:
         src: report.j2
