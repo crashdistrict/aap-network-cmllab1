@@ -1,24 +1,11 @@
 ---
-- name: Build network report
-  hosts: group_cisco_routers
-  gather_facts: false
-
+- name: Gather information from routers
+  hosts: cisco
+  gather_facts: yes
   tasks:
-
-    - name: Gather Cisco facts
+    - name: Gather router facts
       cisco.ios.ios_facts:
-        gather_network_resources:
-          - interfaces
-          - l2_interfaces
-          - l3_interfaces
-          - vlans
-
-    - name: Create reports directory
-      file:
-        path: "./reports"
-        state: directory
-
-    - name: Generate HTML report
-      template:
-        src: report.j2
-        dest: "./reports/{{ inventory_hostname }}.html"
+      register: cisco_facts
+    - name: Display router facts
+      ansible.builtin.debug:
+        var: cisco_facts
